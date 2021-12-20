@@ -9,13 +9,10 @@ from player.main import Player
 
 def controller(screen: Surface, player: Player, td: float, key_handler: KeyHandler):
     key_handler.update()
-    print(key_handler.keys)
-    print(key_handler.mouse_keys)
-    if (key_handler.quit):
+    if key_handler.quit:
         return False
 
     screen.fill(BACKGROUND_COLOR)
+    player.tick(key_handler, td)
     player.display(screen)
-
-    print("time", td)
     return True

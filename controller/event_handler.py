@@ -13,6 +13,18 @@ class KeyHandler:
         self.keys = {key: UP for key in keys.keys()}
         self.mouse_keys = {"left": UP, "right": UP}
 
+    def justPressed(self, key: str):
+        return self.keys[key] == NEWLY_DOWN
+
+    def pressed(self, key:str):
+        return self.keys[key] == DOWN or self.keys[key] == NEWLY_DOWN
+
+    def justReleased(self, key: str):
+        return self.keys[key] == NEWLY_UP
+
+    def released(self, key: str):
+        return self.keys[key] == UP or self.keys[key] == NEWLY_UP
+
     def update(self):
         for key, value in self.keys.items():
             if value == NEWLY_UP:
@@ -25,15 +37,13 @@ class KeyHandler:
             elif value == NEWLY_DOWN:
                 self.mouse_keys[key] = DOWN
 
-        events = {"quit": False}
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                events["quit"] = True
+                self.quit = True
             elif event.type == pygame.KEYDOWN:
                 for key in self.keys:
                     for key_code in keys[key]:
                         if event.key == key_code:
-                            print("down", key)
                             self.keys[key] = NEWLY_DOWN
                             break
             elif event.type == pygame.KEYUP:
