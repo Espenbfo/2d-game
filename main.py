@@ -1,8 +1,9 @@
 from controller.event_handler import KeyHandler
+from controller.game_state import GameState
 from controller.main import controller
 import pygame
 from config import FRAMES_PR_SECOND, WINDOW_SIZE
-from player.main import Player
+from entity.player.main import Player
 
 
 def main():
@@ -13,13 +14,12 @@ def main():
 
     screen = pygame.display.set_mode(WINDOW_SIZE)
 
-    player = Player()
+    game_state = GameState(Player())
     clock = pygame.time.Clock()
-    time_delta = clock.tick(FRAMES_PR_SECOND)/1000
-    key_handler = KeyHandler()
-    while controller(screen, player, time_delta, key_handler):
+    while controller(screen, game_state):
         pygame.display.flip()
-        time_delta = clock.tick(FRAMES_PR_SECOND)/1000
+        game_state.time_delta = clock.tick(FRAMES_PR_SECOND)/1000
+        print(clock.get_fps())
 
 
 if __name__ == "__main__":

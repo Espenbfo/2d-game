@@ -1,7 +1,7 @@
 import pygame
 from pygame.surface import Surface
 from config import BASE_PLAYER_COLOR
-from gameTypes import FloatPairTuple
+from game_types import FloatPairTuple
 
 
 def display(screen: Surface, coords: FloatPairTuple, size: FloatPairTuple):
