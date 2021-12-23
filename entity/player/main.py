@@ -1,19 +1,17 @@
-from pygame.rect import Rect
-
 from controller.event_handler import KeyHandler
-from controller.game_state import GameState
-from entity.player.display import display
+from entity.main import Entity
 from math import sqrt
-from config import BASE_PLAYER_SPEED, WINDOW_SIZE, BASE_PLAYER_COLOR, SCREEN_RECT
-from entity.square_entity.main import SquareEntity
+from config import BASE_PLAYER_SPEED, BASE_PLAYER_COLOR
+from shape.hexagon import Hexagon
 
 
-class Player(SquareEntity):
+class Player(Entity):
 
     def __init__(self):
-        super().__init__(rect=Rect(0,0,25,25), hp=10, color=BASE_PLAYER_COLOR)
+        super().__init__(Hexagon(0, 0, 200 * sqrt(3), 40 * 2), hp=10, color=BASE_PLAYER_COLOR)
         self.velocity = (0, 0)
         self.max_speed = BASE_PLAYER_SPEED
+        self.type = "player"
 
     def move(self, key_handler: KeyHandler, time: float):
         left = key_handler.pressed("left")
@@ -33,18 +31,23 @@ class Player(SquareEntity):
         vx, vy = self.velocity
         if horizontal:
             if (vx < self.max_speed):
-                vx += (self.max_speed*horizontal-vx)/4
+                vx += (self.max_speed * horizontal - vx) / 4
         else:
             vx *= 0.4
         if vertical:
             if (vy < self.max_speed):
-                vy += (self.max_speed*vertical-vy)/4
+                vy += (self.max_speed * vertical - vy) / 4
         else:
             vy *= 0.4
-        self.rect = self.rect.move(vx * time, vy * time)
-        self.rect = self.rect.clamp(SCREEN_RECT)
+        self.display_polygon = self.original_polygon.move(vx * time, vy * time)
 
         self.velocity = vx, vy
 
-    def tick(self, game_state: GameState):
+    def tick(self, game_state):
         self.move(game_state.key_handler, game_state.time_delta)
+        self.original_polygon.scale(1)
+        self.original_polygon.rotate(-0.01)
+
+    def damage(self, incoming_damage):
+        super().damage(incoming_damage)
+        print("oof", self.hp)
