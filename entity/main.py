@@ -3,6 +3,7 @@ from __future__ import annotations
 from pygame.surface import Surface
 
 import controller.game_state
+from helpers.color import Color
 from shape.polygon import Polygon
 
 
@@ -12,7 +13,8 @@ class Entity:
         self.display_polygon: Polygon = polygon
         self.hp = hp
         self.max_speed = speed
-        self.color = color
+        self.original_color = Color(*color)
+        self.display_color = Color(*color)
         self.type = "entity"
 
     def damage(self, incoming_damage: float | int):
@@ -20,7 +22,7 @@ class Entity:
         return self.hp <= 0
 
     def display(self, screen: Surface):
-        self.display_polygon.display(screen, self.color)
+        self.display_polygon.display(screen, self.display_color.rgb())
 
     def tick(self, game_state: controller.game_state.GameState):
         return False

@@ -5,8 +5,9 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from config import WINDOW_SIZE
+from helpers.degree import Degree
 from shape.Line import Line
-from shape.point import Point
+from helpers.point import Point
 
 
 class Polygon:
@@ -16,13 +17,13 @@ class Polygon:
         self.edge_count = len(points)
         self.center = center
 
-        self.rotation = 0
+        self.rotation = Degree(0)
         self.displacement = Point(0, 0)
         self.scaling = 1
 
     def edge(self, index):
         point1 = self.points[index]
-        if index != self.edge_count-1:
+        if index != self.edge_count - 1:
             point2 = self.points[index + 1]
         else:
             point2 = self.points[0]
@@ -67,20 +68,19 @@ class Polygon:
         pygame.draw.polygon(screen, color, self.raw_points)
 
     def scale(self, factor):
-        self.scaling*=factor
+        self.scaling *= factor
 
     def rotate(self, degree):
-        self.rotation+=degree
+        self.rotation += degree
 
     def move(self, x, y, limit=WINDOW_SIZE):
-
 
         points = []
         if self.scaling != 1 or self.rotation:
             for index, point in enumerate(self.points):
-                point = point.rotate_arount(self.center, self.rotation)
+                point = point.rotate_arount(self.center, -(self.rotation.degree))
 
-                points.append((self.center-point)*self.scaling)
+                points.append((self.center - point) * self.scaling)
         else:
             points = self.points
         polygon = Polygon(points, self.center)
@@ -89,16 +89,16 @@ class Polygon:
         box_x, box_y = surrounding_rect.x, surrounding_rect.y
         width, heigth = surrounding_rect.width, surrounding_rect.height
         lim_x, lim_y = limit
-        new_x = box_x+x+self.displacement.x
-        new_y = box_y+y+self.displacement.y
+        new_x = box_x + x + self.displacement.x
+        new_y = box_y + y + self.displacement.y
         if new_x < 0:
-            x = x-new_x
-        elif new_x+width > lim_x:
-            x = x-(new_x+width-lim_x)
+            x = x - new_x
+        elif new_x + width > lim_x:
+            x = x - (new_x + width - lim_x)
         if new_y < 0:
-            y = y-new_y
-        elif new_y+heigth > lim_y:
-            y = y-(new_y+heigth-lim_y)
+            y = y - new_y
+        elif new_y + heigth > lim_y:
+            y = y - (new_y + heigth - lim_y)
 
         displacer = Point(x, y) + self.displacement
         points = []
@@ -115,7 +115,7 @@ class Polygon:
         max_x = -float("inf")
         max_y = -float("inf")
         for point in self.points:
-            x,y = point.pos
+            x, y = point.pos
             if x < min_x:
                 min_x = x
             elif x > max_x:
@@ -124,4 +124,4 @@ class Polygon:
                 min_y = y
             elif y > max_y:
                 max_y = y
-        return Rect(min_x, min_y, max_x-min_x, max_y-min_y)
+        return Rect(min_x, min_y, max_x - min_x, max_y - min_y)

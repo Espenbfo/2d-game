@@ -1,4 +1,4 @@
-from shape.point import Point
+from helpers.point import Point
 from shape.polygon import Polygon
 
 
