@@ -47,11 +47,11 @@ class Player(Entity):
 
     def tick(self, game_state):
         self.move(game_state.key_handler, game_state.time_delta)
-        self.original_polygon.scale(1+0*game_state.time_delta)
-        self.original_polygon.rotate(-4*game_state.time_delta)
+        self.original_polygon.scale(1 + 0 * game_state.time_delta)
+        self.original_polygon.rotate(-3 * game_state.time_delta)
 
         if self.hurt_time_left:
-            self.hurt_time_left = max(self.hurt_time_left-game_state.time_delta,0 )
+            self.hurt_time_left = max(self.hurt_time_left - game_state.time_delta, 0)
 
     def display(self, screen):
         self.display_color = self.original_color.gamma(0.5 * (self.hurt_time_left / self.hurt_time))

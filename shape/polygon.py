@@ -78,7 +78,7 @@ class Polygon:
         points = []
         if self.scaling != 1 or self.rotation:
             for index, point in enumerate(self.points):
-                point = point.rotate_arount(self.center, -(self.rotation.degree))
+                point = point.rotate_around(self.center, -(self.rotation.degree))
 
                 points.append((self.center - point) * self.scaling)
         else:
@@ -86,19 +86,18 @@ class Polygon:
         polygon = Polygon(points, self.center)
         surrounding_rect = polygon.surrounding_rect()
 
-        box_x, box_y = surrounding_rect.x, surrounding_rect.y
-        width, heigth = surrounding_rect.width, surrounding_rect.height
+        box_x, box_y, width, height = surrounding_rect
         lim_x, lim_y = limit
         new_x = box_x + x + self.displacement.x
         new_y = box_y + y + self.displacement.y
         if new_x < 0:
             x = x - new_x
         elif new_x + width > lim_x:
-            x = x - (new_x + width - lim_x)
+            x = lim_x - (box_x + self.displacement.x + width)
         if new_y < 0:
             y = y - new_y
-        elif new_y + heigth > lim_y:
-            y = y - (new_y + heigth - lim_y)
+        elif new_y + height > lim_y:
+            y = lim_y - (box_y + self.displacement.y + height)
 
         displacer = Point(x, y) + self.displacement
         points = []
@@ -106,7 +105,6 @@ class Polygon:
             points.append(point + displacer)
         new_center = self.displacement
         self.displacement = displacer
-
         return Polygon(points, new_center)
 
     def surrounding_rect(self):
@@ -118,10 +116,10 @@ class Polygon:
             x, y = point.pos
             if x < min_x:
                 min_x = x
-            elif x > max_x:
+            if x > max_x:
                 max_x = x
             if y < min_y:
                 min_y = y
-            elif y > max_y:
+            if y > max_y:
                 max_y = y
-        return Rect(min_x, min_y, max_x - min_x, max_y - min_y)
+        return min_x, min_y, max_x - min_x, max_y - min_y

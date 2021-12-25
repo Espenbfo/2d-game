@@ -19,7 +19,6 @@ def main():
     while controller(screen, game_state):
         pygame.display.flip()
         game_state.time_delta = clock.tick(FRAMES_PR_SECOND)/1000
-        print(clock.get_fps())
 
 
 if __name__ == "__main__":

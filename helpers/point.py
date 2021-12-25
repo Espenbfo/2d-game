@@ -38,7 +38,7 @@ class Point:
     def __str__(self):
         return "x: " + str(self.x) + " | y: " + str(self.y)
 
-    def rotate_arount(self, point, angle):
+    def rotate_around(self, point, angle):
         origin_point = self - point
         c = cos(angle)
         s = sin(angle)
