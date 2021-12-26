@@ -13,17 +13,29 @@ class KeyHandler:
         self.keys = {key: UP for key in keys.keys()}
         self.mouse_keys = {"left": UP, "right": UP}
 
-    def justPressed(self, key: str):
+    def just_pressed(self, key: str):
         return self.keys[key] == NEWLY_DOWN
 
     def pressed(self, key:str):
         return self.keys[key] == DOWN or self.keys[key] == NEWLY_DOWN
 
-    def justReleased(self, key: str):
+    def just_released(self, key: str):
         return self.keys[key] == NEWLY_UP
 
     def released(self, key: str):
         return self.keys[key] == UP or self.keys[key] == NEWLY_UP
+    
+    def just_clicked(self, key: str):
+        return self.mouse_keys[key] == NEWLY_DOWN
+
+    def clicked(self, key:str):
+        return self.mouse_keys[key] == DOWN or self.mouse_keys[key] == NEWLY_DOWN
+
+    def just_un_clicked(self, key: str):
+        return self.mouse_keys[key] == NEWLY_UP
+
+    def un_clicked(self, key: str):
+        return self.mouse_keys[key] == UP or self.mouse_keys[key] == NEWLY_UP
 
     def update(self):
         for key, value in self.keys.items():

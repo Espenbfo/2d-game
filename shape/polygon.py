@@ -1,12 +1,11 @@
 from typing import List, Tuple
 
 import pygame.draw
-from pygame.rect import Rect
 from pygame.surface import Surface
 
 from config import WINDOW_SIZE
 from helpers.degree import Degree
-from shape.Line import Line
+from helpers.line import Line
 from helpers.point import Point
 
 
@@ -84,20 +83,21 @@ class Polygon:
         else:
             points = self.points
         polygon = Polygon(points, self.center)
-        surrounding_rect = polygon.surrounding_rect()
 
-        box_x, box_y, width, height = surrounding_rect
-        lim_x, lim_y = limit
-        new_x = box_x + x + self.displacement.x
-        new_y = box_y + y + self.displacement.y
-        if new_x < 0:
-            x = x - new_x
-        elif new_x + width > lim_x:
-            x = lim_x - (box_x + self.displacement.x + width)
-        if new_y < 0:
-            y = y - new_y
-        elif new_y + height > lim_y:
-            y = lim_y - (box_y + self.displacement.y + height)
+        if limit:
+            surrounding_rect = polygon.surrounding_rect()
+            box_x, box_y, width, height = surrounding_rect
+            lim_x, lim_y = limit
+            new_x = box_x + x + self.displacement.x
+            new_y = box_y + y + self.displacement.y
+            if new_x < 0:
+                x = x - new_x
+            elif new_x + width > lim_x:
+                x = lim_x - (box_x + self.displacement.x + width)
+            if new_y < 0:
+                y = y - new_y
+            elif new_y + height > lim_y:
+                y = lim_y - (box_y + self.displacement.y + height)
 
         displacer = Point(x, y) + self.displacement
         points = []
@@ -123,3 +123,19 @@ class Polygon:
             if y > max_y:
                 max_y = y
         return min_x, min_y, max_x - min_x, max_y - min_y
+
+    def outside_bounds(self, bounds=WINDOW_SIZE):
+        surrounding_rect = self.surrounding_rect()
+        box_x, box_y, width, height = surrounding_rect
+        lim_x, lim_y = bounds
+        x = box_x + self.displacement.x
+        y = box_y + self.displacement.y
+        if x + width < 0:
+            return True
+        if x > lim_x:
+            return True
+        if y < width:
+            return True
+        if y > lim_y:
+            return True
+        return False

@@ -21,3 +21,6 @@ class Degree:
             return Degree(self.degree * other.degree)
         else:
             return Degree(self.degree * other)
+
+    def __pow__(self, power, modulo=None):
+        return Degree(self.degree ** power)

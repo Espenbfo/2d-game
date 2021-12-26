@@ -1,7 +1,14 @@
+import random
+
+import pygame.mouse
+
+from bullet.standard.main import Bullet
 from controller.event_handler import KeyHandler
 from entity.main import Entity
-from math import sqrt
+from math import sqrt, atan2
 from config import BASE_PLAYER_SPEED, BASE_PLAYER_COLOR
+from helpers.degree import Degree
+from helpers.point import Point
 from shape.hexagon import Hexagon
 
 
@@ -14,6 +21,10 @@ class Player(Entity):
         self.type = "player"
         self.hurt_time = 0.3
         self.hurt_time_left = 0
+
+        self.fire_rate = 4
+        self.time_to_next_bullet = 1 / self.fire_rate
+        self.spread = 0.3
 
     def move(self, key_handler: KeyHandler, time: float):
         left = key_handler.pressed("left")
@@ -32,7 +43,7 @@ class Player(Entity):
 
         vx, vy = self.velocity
         if horizontal:
-            if (vx < self.max_speed):
+            if vx < self.max_speed:
                 vx += (self.max_speed * horizontal - vx) / 4
         else:
             vx *= 0.4
@@ -52,6 +63,21 @@ class Player(Entity):
 
         if self.hurt_time_left:
             self.hurt_time_left = max(self.hurt_time_left - game_state.time_delta, 0)
+            self.invincible = False
+
+        if self.time_to_next_bullet < 0:
+            if game_state.key_handler.clicked("left"):
+                self.time_to_next_bullet += 1 / self.fire_rate
+                self.fire(game_state)
+        else:
+            self.time_to_next_bullet -= game_state.time_delta
+
+    def fire(self, game_state):
+        position = self.display_polygon.center
+        mouse_pos = Point(*pygame.mouse.get_pos())
+        diff = mouse_pos - position
+        angle = Degree(atan2(*diff.pos)) + (random.random() - 0.5) * self.spread
+        game_state.add_friendly(Bullet(*self.display_polygon.center.pos, initial_rotation=angle))
 
     def display(self, screen):
         self.display_color = self.original_color.gamma(0.5 * (self.hurt_time_left / self.hurt_time))
@@ -60,3 +86,4 @@ class Player(Entity):
     def damage(self, incoming_damage):
         super().damage(incoming_damage)
         self.hurt_time_left = self.hurt_time
+        self.invincible = True
