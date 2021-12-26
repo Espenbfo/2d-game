@@ -21,7 +21,7 @@ class Player(Entity):
         self.type = "player"
         self.hurt_time = 0.3
         self.hurt_time_left = 0
-
+        self.hp = 100
         self.fire_rate = 1000
         self.time_to_next_bullet = 1 / self.fire_rate
         self.spread = 0.3
@@ -85,13 +85,15 @@ class Player(Entity):
         smaller_polygon = self.original_polygon.__copy__()
         smaller_polygon.scale(0.71)
         display = smaller_polygon.move(0,0)
-        display.display(screen, (200, 90, 128))
+        display.display(screen, self.display_color.lighten(0.8).rgb())
         smaller_polygon = self.original_polygon.__copy__()
         smaller_polygon.scale(0.35)
         display = smaller_polygon.move(0,0)
-        display.display(screen, (0, 90, 128))
+        display.display(screen, self.display_color.lighten(0.4).rgb())
 
     def damage(self, incoming_damage):
         super().damage(incoming_damage)
         self.hurt_time_left = self.hurt_time
         self.invincible = True
+        if (self.hp < 0):
+            print("GAME OVER")
