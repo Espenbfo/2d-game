@@ -1,5 +1,5 @@
 from helpers.point import Point
-from shape.polygon import Polygon
+from helpers.polygon import Polygon
 
 
 class Arrow(Polygon):

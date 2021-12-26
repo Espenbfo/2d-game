@@ -44,3 +44,6 @@ class Point:
         s = sin(angle)
         rotated = Point(origin_point.x*c-origin_point.y*s, origin_point.x*s+origin_point.y*c)
         return rotated + point
+
+    def __copy__(self):
+        return Point(self.x ,self.y)

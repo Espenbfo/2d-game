@@ -22,7 +22,7 @@ class Player(Entity):
         self.hurt_time = 0.3
         self.hurt_time_left = 0
 
-        self.fire_rate = 4
+        self.fire_rate = 1000
         self.time_to_next_bullet = 1 / self.fire_rate
         self.spread = 0.3
 
@@ -52,7 +52,7 @@ class Player(Entity):
                 vy += (self.max_speed * vertical - vy) / 4
         else:
             vy *= 0.4
-        self.display_polygon = self.original_polygon.move(vx * time, vy * time)
+        self.translate(vx * time, vy * time)
 
         self.velocity = vx, vy
 
@@ -82,6 +82,14 @@ class Player(Entity):
     def display(self, screen):
         self.display_color = self.original_color.gamma(0.5 * (self.hurt_time_left / self.hurt_time))
         super().display(screen)
+        smaller_polygon = self.original_polygon.__copy__()
+        smaller_polygon.scale(0.71)
+        display = smaller_polygon.move(0,0)
+        display.display(screen, (200, 90, 128))
+        smaller_polygon = self.original_polygon.__copy__()
+        smaller_polygon.scale(0.35)
+        display = smaller_polygon.move(0,0)
+        display.display(screen, (0, 90, 128))
 
     def damage(self, incoming_damage):
         super().damage(incoming_damage)

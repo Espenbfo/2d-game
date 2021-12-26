@@ -139,3 +139,10 @@ class Polygon:
         if y > lim_y:
             return True
         return False
+
+    def __copy__(self):
+        p = Polygon(self.points, self.center)
+        p.rotation = self.rotation
+        p.scaling = self.scaling
+        p.displacement = self.displacement.__copy__()
+        return p

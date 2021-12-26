@@ -3,9 +3,10 @@ from __future__ import annotations
 from pygame.surface import Surface
 
 import controller.game_state
+from config import WINDOW_SIZE
 from helpers.color import Color
 from helpers.point import Point
-from shape.polygon import Polygon
+from helpers.polygon import Polygon
 
 ID = 0
 
@@ -28,7 +29,8 @@ class Entity:
 
     def damage(self, incoming_damage: float | int):
         self.hp -= incoming_damage
-        return self.hp <= 0
+        if self.hp < 0:
+            self.to_be_deleted = True
 
     def display(self, screen: Surface):
         self.display_polygon.display(screen, self.display_color.rgb())
@@ -36,5 +38,11 @@ class Entity:
     def tick(self, game_state: controller.game_state.GameState):
         return False
 
+    def translate(self, x, y, limit=WINDOW_SIZE):
+        self.display_polygon = self.original_polygon.move(x, y, limit)
+
     def collide(self, other: Entity):
         pass
+
+    def is_colliding(self, other: Entity):
+        return self.display_polygon.collide(other.display_polygon)
